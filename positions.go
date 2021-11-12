@@ -5,18 +5,20 @@ import (
 )
 
 type Position struct {
-	AccountURL               string  `json:"account"`
-	SharesHeldForStockGrants float64 `json:"shares_held_for_stock_grants,string"`
-	IntradayQuantity         float64 `json:"intraday_quantity,string"`
-	IntradayAverageBuyPrice  float64 `json:"intraday_average_buy_price,string"`
-	URL                      string
-	CreatedAt                time.Time `json:"created_at"`
-	UpdatedAt                time.Time `json:"updated_at"`
-	SharesHeldForBuys        float64   `json:"shares_held_for_buys,string"`
-	AverageBuyPrice          float64   `json:"average_buy_price,string"`
-	InstrumentURL            string    `json:"instrument"`
-	SharesHeldForSells       float64   `json:"shares_held_for_sells,string"`
-	Quantity                 float64   `json:",string"`
+	AccountURL                     string  `json:"account"`
+	SharesHeldForStockGrants       float64 `json:"shares_held_for_stock_grants,string"`
+	IntradayQuantity               float64 `json:"intraday_quantity,string"`
+	IntradayAverageBuyPrice        float64 `json:"intraday_average_buy_price,string"`
+	URL                            string
+	CreatedAt                      time.Time `json:"created_at"`
+	UpdatedAt                      time.Time `json:"updated_at"`
+	SharesHeldForBuys              float64   `json:"shares_held_for_buys,string"`
+	SharesHeldForOptionsCollateral string    `json:"shares_held_for_options_collateral"`
+	SharesHeldForOptionsEvents     string    `json:"shares_held_for_options_events"`
+	AverageBuyPrice                float64   `json:"average_buy_price,string"`
+	InstrumentURL                  string    `json:"instrument"`
+	SharesHeldForSells             float64   `json:"shares_held_for_sells,string"`
+	Quantity                       float64   `json:",string"`
 }
 
 type getPositionsRequest struct {

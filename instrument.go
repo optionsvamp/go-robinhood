@@ -21,6 +21,7 @@ type Instrument struct {
 	FundamentalsURL    string `json:"fundamentals"`
 	QuoteURL           string `json:"quote"`
 	Symbol             string
+	ChainSymbol        string  `json:"chain_symbol"`
 	DayTradeRatio      float64 `json:"day_trade_ratio,string"`
 	Name               string
 	TradableChainID    *string `json:"tradable_chain_id"`
@@ -31,7 +32,7 @@ type Instrument struct {
 	Country            string
 }
 
-// List all known instruments.
+// ListAllInstruments will take a long time to list all known instruments
 func (c *Client) ListAllInstruments() ([]*Instrument, error) {
 	url := Endpoint + "/instruments/"
 	var result []*Instrument
@@ -59,6 +60,18 @@ type getInstrumentsRequest struct {
 	Symbol string `url:",omitempty"`
 }
 
+// ListInstrumentsByIDList will fetch a list of instruments in a single query
+func (c *Client) ListInstrumentsByIDList(idList []string) ([]*Instrument, error) {
+	url := Endpoint + "/instruments/?ids=" + strings.Join(idList, ",")
+	var resp struct {
+		Results []*Instrument
+		Next    string
+	}
+
+	err := c.getJSON(url, nil, &resp)
+	return resp.Results, err
+}
+
 // Get info for a particular symbol.
 func (c *Client) ListInstrumentsForSymbol(symbol string) ([]*Instrument, error) {
 	url := Endpoint + "/instruments/"
@@ -84,12 +97,16 @@ func (c *Client) ListInstrumentsForSymbol(symbol string) ([]*Instrument, error) 
 	return result, nil
 }
 
-// Get info for a particular instrument ID.
+// GetInstrument fetches an instrument by its ID
 func (c *Client) GetInstrument(id string) (*Instrument, error) {
-	url := GetInstrumentURL(id)
-	resp := &Instrument{}
-	err := c.getJSON(url, nil, resp)
-	return resp, err
+	instruments, err := c.ListInstrumentsByIDList([]string{id})
+	if err != nil {
+		return nil, err
+	}
+	if len(instruments) == 0 {
+		return nil, nil
+	}
+	return instruments[0], nil
 }
 
 // Helper function to extract the instrument ID from an instrument URL.

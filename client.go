@@ -87,7 +87,14 @@ func (c *Client) do(req *http.Request, result interface{}) error {
 }
 
 func buildFullURL(baseURL string, request interface{}) (string, error) {
-	values, err := query.Values(request)
+	var values url.Values
+	var err error
+
+	if request == nil {
+		return baseURL, nil
+	}
+
+	values, err = query.Values(request)
 	if err != nil {
 		return "", err
 	}
@@ -96,7 +103,7 @@ func buildFullURL(baseURL string, request interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	urlParsed.RawQuery = values.Encode()
+
 	return urlParsed.String(), nil
 }
